@@ -176,9 +176,9 @@ const addReservation = async (req, res) => {
 // updates an existing reservation
 const updateReservation = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
-  const { id, givenName, surname, email } = req.body;
+  const { id, flight, seat, givenName, surname, email } = req.body;
   const query = { id };
-  const newValues = { $set: { ...{ givenName, surname, email } } };
+  const newValues = { $set: { flight, seat, givenName, surname, email } };
 
   try {
     await client.connect();
@@ -188,11 +188,13 @@ const updateReservation = async (req, res) => {
       .collection("reservations")
       .findOne({ id });
 
+    const oldSeat = reservationDocument.seat;
+
     if (!reservationDocument) {
       throw Error("Reservation not found!");
     }
 
-    if (!givenName || !surname || !email) {
+    if (!flight || !seat || !givenName || !surname || !email) {
       throw Error("Updated field(s) cannot be empty!");
     }
 
@@ -200,13 +202,37 @@ const updateReservation = async (req, res) => {
       throw Error(`Email is missing "@"!`);
     }
 
+    const flightDocument = await db.collection("flights").findOne({ flight });
+
+    if (!flightDocument) {
+      throw Error("Flight does not exist!");
+    }
+    const seatsInFlight = flightDocument.seats;
+
+    const indexOldSeat = seatsInFlight.findIndex((seatInFlight) => {
+      return seatInFlight.id === oldSeat;
+    });
+
+    const indexSeat = seatsInFlight.findIndex((seatInFlight) => {
+      return seatInFlight.id === seat;
+    });
+
+    if (!flightDocument.seats[indexSeat].isAvailable) {
+      throw Error("Seat is already reserved!");
+    }
+
+    flightDocument.seats[indexOldSeat].isAvailable = true;
+    flightDocument.seats[indexSeat].isAvailable = false;
+
+    const flightUpdated = await db
+      .collection("flights")
+      .replaceOne({ flight }, flightDocument);
+
     const reservationUpdated = await db
       .collection("reservations")
       .updateOne(query, newValues);
 
-    res
-      .status(204)
-      .json({ status: 204, message: "Reservation updated!", data: req.body });
+    res.status(204).json({ status: 204, message: "Reservation updated!" });
   } catch (err) {
     console.log(err.stack);
     res.status(404).json({ status: 404, data: "Not found!" });
@@ -230,6 +256,19 @@ const deleteReservation = async (req, res) => {
       throw Error("Reservation not found!");
     }
 
+    const { flight, seat } = reservationDocument;
+    const flightDocument = await db.collection("flights").findOne({ flight });
+    const seatsInFlight = flightDocument.seats;
+    const index = seatsInFlight.findIndex((seatInFlight) => {
+      return seatInFlight.id === seat;
+    });
+
+    flightDocument.seats[index].isAvailable = true;
+
+    const seatNowAvailable = await db
+      .collection("flights")
+      .replaceOne({ flight }, flightDocument);
+
     const deleteReservation = await db
       .collection("reservations")
       .deleteOne({ id });
@@ -237,7 +276,6 @@ const deleteReservation = async (req, res) => {
     res.status(204).json({
       status: 204,
       message: "Reservation deleted!",
-      data: reservationDocument,
     });
   } catch (err) {
     console.log(err.stack);
