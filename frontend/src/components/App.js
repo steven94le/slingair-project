@@ -5,12 +5,14 @@ import Footer from "./Footer";
 import SeatSelect from "./SeatSelect";
 import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
+import FlightSelect from "./FlightSelect";
 
 const App = () => {
   return (
     <BrowserRouter>
       <GlobalStyles />
       <Header />
+      <FlightSelect />
       <Main>
         <Switch>
           <Route exact path="/">
