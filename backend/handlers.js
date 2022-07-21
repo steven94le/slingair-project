@@ -28,7 +28,7 @@ const getFlights = async (req, res) => {
     if (flightsCollection) {
       res.status(200).json({
         status: 200,
-        message: "Flights data found!",
+        message: "Flights found!",
         data: flightsCollection,
       });
     } else {
@@ -36,7 +36,7 @@ const getFlights = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not found!" });
+    res.status(404).json({ status: 404, data: "Flights not found!" });
   }
   client.close();
 };
@@ -60,7 +60,7 @@ const getFlight = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not Found!" });
+    res.status(404).json({ status: 404, data: "Flight not Found!" });
   }
   client.close();
 };
@@ -80,7 +80,7 @@ const getReservations = async (req, res) => {
     if (reservationsCollection) {
       res.status(200).json({
         status: 200,
-        message: "Reservations data found!",
+        message: "Reservations found!",
         data: reservationsCollection,
       });
     } else {
@@ -88,7 +88,7 @@ const getReservations = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not Found!" });
+    res.status(404).json({ status: 404, data: "Reservations not found!" });
   }
   client.close();
 };
@@ -116,7 +116,7 @@ const getSingleReservation = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not found!" });
+    res.status(404).json({ status: 404, data: "Reservation not found!" });
   }
   client.close();
 };
@@ -136,17 +136,24 @@ const addReservation = async (req, res) => {
       return seatInFlight.id === seat;
     });
 
-    const isSeatAvailable = seatsInFlight[index].isAvailable;
-
     if (!flight || !seat || !givenName || !surname || !email) {
-      return res.status(400).json({
+      res.status(400).json({
         status: 400,
         message: "Please provide all booking information.",
       });
     }
 
+    if (index === -1) {
+      res.status(400).json({
+        status: 400,
+        message: "This seat does not exist!",
+      });
+    }
+
+    const isSeatAvailable = seatsInFlight[index].isAvailable;
+
     if (isSeatAvailable === false) {
-      return res
+      res
         .status(400)
         .json({ status: 400, message: "This seat has aleady been reserved!" });
     }
@@ -168,7 +175,7 @@ const addReservation = async (req, res) => {
       .json({ status: 200, message: "Seat booked!", data: reservation });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Booking error!" });
+    res.status(404).json({ status: 404, data: "Not found!" });
   }
   client.close();
 };
@@ -191,21 +198,23 @@ const updateReservation = async (req, res) => {
     const oldSeat = reservationDocument.seat;
 
     if (!reservationDocument) {
-      throw Error("Reservation not found!");
+      res.status(400).json({ status: 400, data: "Reservation not found!" });
     }
 
     if (!flight || !seat || !givenName || !surname || !email) {
-      throw Error("Updated field(s) cannot be empty!");
+      res
+        .status(400)
+        .json({ status: 400, data: "Updated field(s) cannot be empty!" });
     }
 
     if (!email.includes("@")) {
-      throw Error(`Email is missing "@"!`);
+      res.status(400).json({ status: 400, data: `Email is missing "@"!` });
     }
 
     const flightDocument = await db.collection("flights").findOne({ flight });
 
     if (!flightDocument) {
-      throw Error("Flight does not exist!");
+      res.status(400).json({ status: 400, data: "Flight does not exist!" });
     }
     const seatsInFlight = flightDocument.seats;
 
@@ -217,8 +226,12 @@ const updateReservation = async (req, res) => {
       return seatInFlight.id === seat;
     });
 
+    if (indexSeat === -1) {
+      res.status(400).json({ status: 400, data: "Seat does not exist!" });
+    }
+
     if (!flightDocument.seats[indexSeat].isAvailable) {
-      throw Error("Seat is already reserved!");
+      res.status(400).json({ status: 400, data: "Seat is already reserved!" });
     }
 
     flightDocument.seats[indexOldSeat].isAvailable = true;
@@ -253,7 +266,7 @@ const deleteReservation = async (req, res) => {
       .findOne({ id });
 
     if (!reservationDocument) {
-      throw Error("Reservation not found!");
+      res.status(400).json({ status: 400, data: "Reservation not found!" });
     }
 
     const { flight, seat } = reservationDocument;
