@@ -1,7 +1,26 @@
 import Plane from "./Plane";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
+  const history = useHistory();
+
+  const handleFormSubmit = () => {
+    fetch("/api/add-reservation", {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+    history.push("/confirmed");
+  };
+
   return (
     <>
       <h2>Select your seat and Provide your information!</h2>
@@ -26,8 +45,9 @@ const SeatSelect = ({ formData, handleFormChange }) => {
             placeholder="Email"
             onChange={(e) => handleFormChange(e.target.value, "email")}
           />
-          <StyledButton type="button">Confirm</StyledButton>
-          {formData ? console.log(formData) : null}
+          <StyledButton type="button" onClick={handleFormSubmit}>
+            Confirm
+          </StyledButton>
         </StyledForm>
       </Wrapper>
     </>
