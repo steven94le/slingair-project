@@ -1,12 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 
-const Plane = ({}) => {
-  const [seating, setSeating] = useState([]);
+import { CurrentFlightContext } from "../CurrentFlightContext";
+
+const Plane = () => {
+  const [seating, setSeating] = useState("");
+  const { currentFlight } = useContext(CurrentFlightContext);
 
   useEffect(() => {
-    // TODO: get seating data for selected flight
-  }, []);
+    fetch(`/api/get-flight/${currentFlight}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setSeating(data?.data?.seats);
+      });
+  }, [currentFlight]);
 
   return (
     <Wrapper>

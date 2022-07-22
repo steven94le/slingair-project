@@ -33,11 +33,8 @@ const FlightSelect = () => {
                 );
               })
             : null}
-          <option>test 2</option>
-          <option>test 3</option>
         </select>
       </form>
-      {currentFlight ? <div>{currentFlight}</div> : null}
     </Wrapper>
   );
 };
