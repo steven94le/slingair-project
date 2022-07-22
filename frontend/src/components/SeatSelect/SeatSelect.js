@@ -1,11 +1,15 @@
 import Plane from "./Plane";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
+
+import { Redirect } from "react-router-dom";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
-  const history = useHistory();
+  const [reservation, setReservation] = useState("");
 
-  const handleFormSubmit = () => {
+  const handleFormSubmit = (ev) => {
+    ev.preventDefault();
+
     fetch("/api/add-reservation", {
       method: "POST",
       body: JSON.stringify(formData),
@@ -14,11 +18,13 @@ const SeatSelect = ({ formData, handleFormChange }) => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        return res.json();
+      })
       .then((data) => {
-        console.log(data);
+        console.log("data", data.data);
+        setReservation(data.data);
       });
-    history.push("/confirmed");
   };
 
   return (
@@ -45,9 +51,10 @@ const SeatSelect = ({ formData, handleFormChange }) => {
             placeholder="Email"
             onChange={(e) => handleFormChange(e.target.value, "email")}
           />
-          <StyledButton type="button" onClick={handleFormSubmit}>
+          <StyledButton type="submit" onClick={handleFormSubmit}>
             Confirm
           </StyledButton>
+          {reservation ? <Redirect to="/confirmed" /> : null}
         </StyledForm>
       </Wrapper>
     </>
@@ -59,7 +66,7 @@ const Wrapper = styled.div`
   justify-content: center;
 `;
 
-const StyledForm = styled.div`
+const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;

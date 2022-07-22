@@ -27,9 +27,7 @@ const FlightSelect = ({ handleFormChange }) => {
 
       <form>
         <select onChange={(e) => handleSelectFlight(e)}>
-          <option value="" hidden>
-            Choose your flight
-          </option>
+          <option value="">Choose your flight</option>
           {flights && flights.length > 0
             ? flights.map((elem, index) => {
                 return (
