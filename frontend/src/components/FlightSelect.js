@@ -3,9 +3,13 @@ import styled from "styled-components";
 
 import { CurrentFlightContext } from "./CurrentFlightContext";
 
-const FlightSelect = () => {
+const FlightSelect = ({ handleFormChange }) => {
   const [flights, setFlights] = useState([]);
-  const { currentFlight, setCurrentFlight } = useContext(CurrentFlightContext);
+  const { setCurrentFlight } = useContext(CurrentFlightContext);
+  const handleSelectFlight = (e) => {
+    setCurrentFlight(e.target.value);
+    handleFormChange(e.target.value, "flight");
+  };
 
   useEffect(() => {
     fetch("/api/get-flights")
@@ -22,7 +26,7 @@ const FlightSelect = () => {
       <h2>Flight Number :</h2>
 
       <form>
-        <select onChange={(e) => setCurrentFlight(e.target.value)}>
+        <select onChange={(e) => handleSelectFlight(e)}>
           <option value="" hidden>
             Choose your flight
           </option>

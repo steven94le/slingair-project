@@ -3,9 +3,14 @@ import styled from "styled-components";
 
 import { CurrentFlightContext } from "../CurrentFlightContext";
 
-const Plane = () => {
+const Plane = ({ handleFormChange }) => {
   const [seating, setSeating] = useState("");
   const { currentFlight } = useContext(CurrentFlightContext);
+  const [selectSeat, setSelectSeat] = useState("");
+  const handleSelectSeat = (e) => {
+    setSelectSeat(e.target.value);
+    handleFormChange(e.target.value, "seat");
+  };
 
   useEffect(() => {
     fetch(`/api/get-flight/${currentFlight}`)
@@ -25,7 +30,12 @@ const Plane = () => {
             <label>
               {seat.isAvailable ? (
                 <>
-                  <Seat type="radio" name="seat" onChange={() => {}} />
+                  <Seat
+                    type="radio"
+                    name="seat"
+                    value={`${seat.id}`}
+                    onChange={(e) => handleSelectSeat(e)}
+                  />
                   <Available>{seat.id}</Available>
                 </>
               ) : (

@@ -1,17 +1,33 @@
 import Plane from "./Plane";
 import styled from "styled-components";
 
-const SeatSelect = () => {
+const SeatSelect = ({ formData, handleFormChange }) => {
   return (
     <>
       <h2>Select your seat and Provide your information!</h2>
       <Wrapper>
-        <Plane />
+        <Plane handleFormChange={handleFormChange} />
         <StyledForm>
-          <input type="text" name="givenName" placeholder="First Name" />
-          <input type="text" name="surname" placeholder="Last Name" />
-          <input type="text" name="email" placeholder="Email" />
-          <StyledButton type>Confirm</StyledButton>
+          <input
+            type="text"
+            name="givenName"
+            placeholder="First Name"
+            onChange={(e) => handleFormChange(e.target.value, "givenName")}
+          />
+          <input
+            type="text"
+            name="surname"
+            placeholder="Last Name"
+            onChange={(e) => handleFormChange(e.target.value, "surname")}
+          />
+          <input
+            type="text"
+            name="email"
+            placeholder="Email"
+            onChange={(e) => handleFormChange(e.target.value, "email")}
+          />
+          <StyledButton type="button">Confirm</StyledButton>
+          {formData ? console.log(formData) : null}
         </StyledForm>
       </Wrapper>
     </>

@@ -6,17 +6,33 @@ import SeatSelect from "./SeatSelect";
 import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
 import FlightSelect from "./FlightSelect";
+import React, { useState } from "react";
 
 const App = () => {
+  const [formData, setFormData] = useState({
+    flight: "",
+    seat: "",
+    givenName: "",
+    surname: "",
+    email: "",
+  });
+
+  const handleFormChange = (value, name) => {
+    setFormData({ ...formData, [name]: value });
+  };
+
   return (
     <BrowserRouter>
       <GlobalStyles />
       <Header />
-      <FlightSelect />
+      <FlightSelect handleFormChange={handleFormChange} />
       <Main>
         <Switch>
           <Route exact path="/">
-            <SeatSelect />
+            <SeatSelect
+              formData={formData}
+              handleFormChange={handleFormChange}
+            />
           </Route>
           <Route exact path="/confirmed">
             <Confirmation />
