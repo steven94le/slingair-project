@@ -2,20 +2,27 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
 import slingairLogo from "../assets/logo_text.png";
+import React, { useContext } from "react";
+import { ReservationContext } from "./ReservationContext";
 
-const Header = () => (
-  <Wrapper>
-    <Logo>
-      <h1>Sling Airlines</h1>
-    </Logo>
-    <Nav>
-      {/* TODO: only show link if the user has a reservation already */}
-      <>
-        <StyledNavLink to="/view-reservation">Reservation</StyledNavLink>
-      </>
-    </Nav>
-  </Wrapper>
-);
+const Header = () => {
+  const { reservation } = useContext(ReservationContext);
+
+  return (
+    <Wrapper>
+      <Logo>
+        <h1>Sling Airlines</h1>
+      </Logo>
+      <Nav>
+        {reservation ? (
+          <>
+            <StyledNavLink to="/view-reservation">Reservation</StyledNavLink>
+          </>
+        ) : null}
+      </Nav>
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.header`
   display: flex;
