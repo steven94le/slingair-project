@@ -1,12 +1,13 @@
 import Plane from "./Plane";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import React, { useContext } from "react";
 
-import { Redirect } from "react-router-dom";
 import { ReservationContext } from "../ReservationContext";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
-  const { reservation, setReservation } = useContext(ReservationContext);
+  const history = useHistory();
+  const { setReservation } = useContext(ReservationContext);
 
   const handleFormSubmit = (ev) => {
     ev.preventDefault();
@@ -23,8 +24,11 @@ const SeatSelect = ({ formData, handleFormChange }) => {
         return res.json();
       })
       .then((data) => {
-        setReservation(data.data);
+        setReservation(data?.data);
+        window.localStorage.setItem("reservationId", data?.data.id);
       });
+
+    history.push("/confirmed");
   };
 
   return (
@@ -51,10 +55,10 @@ const SeatSelect = ({ formData, handleFormChange }) => {
             placeholder="Email"
             onChange={(e) => handleFormChange(e.target.value, "email")}
           />
+
           <StyledButton type="submit" onClick={handleFormSubmit}>
             Confirm
           </StyledButton>
-          {reservation ? <Redirect to="/confirmed" /> : null}
         </StyledForm>
       </Wrapper>
     </>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-
 import tombstone from "../assets/tombstone.png";
 import React, { useContext } from "react";
+
 import { ReservationContext } from "./ReservationContext";
 
 const Reservation = () => {

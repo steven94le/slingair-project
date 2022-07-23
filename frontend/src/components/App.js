@@ -6,10 +6,15 @@ import SeatSelect from "./SeatSelect";
 import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
 import FlightSelect from "./FlightSelect";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Reservation from "./Reservation";
 
+import { ReservationContext } from "./ReservationContext";
+
 const App = () => {
+  const reservationId = window.localStorage.getItem("reservationId");
+  const { setReservation } = useContext(ReservationContext);
+
   const [formData, setFormData] = useState({
     flight: "",
     seat: "",
@@ -21,6 +26,16 @@ const App = () => {
   const handleFormChange = (value, name) => {
     setFormData({ ...formData, [name]: value });
   };
+
+  useEffect(() => {
+    fetch(`/api/get-reservation/${reservationId}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setReservation(data.data);
+      });
+  }, [reservationId, setReservation]);
 
   return (
     <BrowserRouter>

@@ -10,10 +10,11 @@ const Header = () => {
 
   return (
     <Wrapper>
-      <Logo>
-        <h1>Sling Airlines</h1>
-      </Logo>
-
+      <a href="/">
+        <Logo>
+          <h1>Sling Airlines</h1>
+        </Logo>
+      </a>
       <Nav>
         {reservation ? (
           <>
