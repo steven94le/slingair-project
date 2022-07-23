@@ -1,17 +1,23 @@
 import styled from "styled-components";
 
 import tombstone from "../assets/tombstone.png";
+import React, { useContext } from "react";
+import { ReservationContext } from "./ReservationContext";
 
 const Confirmation = () => {
+  const { reservation } = useContext(ReservationContext);
+
   return (
     <Wrapper>
       <StyledBooking>
         <div>Your flight is confirmed!</div>
-        <div>Reservation #: </div>
-        <div>Flight #: </div>
-        <div>Seat #: </div>
-        <div>Name: </div>
-        <div>Email: </div>
+        <div>Reservation #: {reservation.id}</div>
+        <div>Flight #: {reservation.flight}</div>
+        <div>Seat #: {reservation.seat}</div>
+        <div>
+          Name: {reservation.givenName} {reservation.surname}
+        </div>
+        <div>Email: {reservation.email}</div>
       </StyledBooking>
       <img src={tombstone} height="50%" width="20%" alt="tombstone" />
     </Wrapper>

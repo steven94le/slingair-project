@@ -1,11 +1,12 @@
 import Plane from "./Plane";
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 
 import { Redirect } from "react-router-dom";
+import { ReservationContext } from "../ReservationContext";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
-  const [reservation, setReservation] = useState("");
+  const { reservation, setReservation } = useContext(ReservationContext);
 
   const handleFormSubmit = (ev) => {
     ev.preventDefault();
@@ -22,7 +23,6 @@ const SeatSelect = ({ formData, handleFormChange }) => {
         return res.json();
       })
       .then((data) => {
-        console.log("data", data.data);
         setReservation(data.data);
       });
   };
