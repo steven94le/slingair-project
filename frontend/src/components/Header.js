@@ -13,10 +13,11 @@ const Header = () => {
       <Logo>
         <h1>Sling Airlines</h1>
       </Logo>
+
       <Nav>
         {reservation ? (
           <>
-            <StyledNavLink to="/view-reservation">Reservation</StyledNavLink>
+            <StyledNavLink to="/reservation">Reservation</StyledNavLink>
           </>
         ) : null}
       </Nav>

@@ -7,6 +7,7 @@ import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
 import FlightSelect from "./FlightSelect";
 import React, { useState } from "react";
+import Reservation from "./Reservation";
 
 const App = () => {
   const [formData, setFormData] = useState({
@@ -25,10 +26,10 @@ const App = () => {
     <BrowserRouter>
       <GlobalStyles />
       <Header />
-      <FlightSelect handleFormChange={handleFormChange} />
       <Main>
         <Switch>
           <Route exact path="/">
+            <FlightSelect handleFormChange={handleFormChange} />
             <SeatSelect
               formData={formData}
               handleFormChange={handleFormChange}
@@ -36,6 +37,9 @@ const App = () => {
           </Route>
           <Route exact path="/confirmed">
             <Confirmation />
+          </Route>
+          <Route exact path="/reservation">
+            <Reservation />
           </Route>
           <Route path="">404: Oops!</Route>
         </Switch>

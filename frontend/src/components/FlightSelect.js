@@ -25,7 +25,7 @@ const FlightSelect = ({ handleFormChange }) => {
     <Wrapper>
       <h2>Flight Number :</h2>
 
-      <form>
+      <StyledForm>
         <select onChange={(e) => handleSelectFlight(e)}>
           <option value="">Choose your flight</option>
           {flights && flights.length > 0
@@ -36,7 +36,7 @@ const FlightSelect = ({ handleFormChange }) => {
               })
             : null}
         </select>
-      </form>
+      </StyledForm>
     </Wrapper>
   );
 };
@@ -46,8 +46,11 @@ const Wrapper = styled.header`
   color: white;
   background: var(--color-cadmium-red);
   font-family: var(--font-heading);
-  height: 80px;
-  padding: var(--padding-page) 18px;
+  padding-left: 25px;
+`;
+
+const StyledForm = styled.form`
+  margin: 8px;
 `;
 
 export default FlightSelect;
