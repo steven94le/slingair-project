@@ -1,11 +1,21 @@
 import styled from "styled-components";
 import tombstone from "../assets/tombstone.png";
-import React, { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 
 import { ReservationContext } from "./ReservationContext";
 
-const Reservation = () => {
-  const { reservation } = useContext(ReservationContext);
+const Reservation = ({ reservationId }) => {
+  const { reservation, setReservation } = useContext(ReservationContext);
+
+  useEffect(() => {
+    fetch(`/api/get-reservation/${reservationId}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setReservation(data.data);
+      });
+  }, [reservationId, setReservation]);
 
   return (
     <Wrapper>

@@ -2,12 +2,8 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 
 import slingairLogo from "../assets/logo_text.png";
-import React, { useContext } from "react";
-import { ReservationContext } from "./ReservationContext";
 
-const Header = () => {
-  const { reservation } = useContext(ReservationContext);
-
+const Header = ({ reservationId }) => {
   return (
     <Wrapper>
       <a href="/">
@@ -16,7 +12,7 @@ const Header = () => {
         </Logo>
       </a>
       <Nav>
-        {reservation ? (
+        {reservationId ? (
           <>
             <StyledNavLink to="/reservation">Reservation</StyledNavLink>
           </>
