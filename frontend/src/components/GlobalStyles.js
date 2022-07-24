@@ -82,4 +82,8 @@ input {
     border-radius: 4px;
     padding: 0 12px;
   }
+
+  hr {
+  border-color: var(--color-alabama-crimson);
+}
 `;

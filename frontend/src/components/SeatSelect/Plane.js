@@ -7,6 +7,7 @@ const Plane = ({ handleFormChange }) => {
   const [seating, setSeating] = useState("");
   const { currentFlight } = useContext(CurrentFlightContext);
   const [selectSeat, setSelectSeat] = useState("");
+
   const handleSelectSeat = (e) => {
     setSelectSeat(e.target.value);
     handleFormChange(e.target.value, "seat");

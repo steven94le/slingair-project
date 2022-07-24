@@ -1,13 +1,14 @@
 import Plane from "./Plane";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { ReservationContext } from "../ReservationContext";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
   const history = useHistory();
   const { setReservation } = useContext(ReservationContext);
+  const [disabled, setDisabled] = useState(true);
 
   const handleFormSubmit = (ev) => {
     ev.preventDefault();
@@ -30,6 +31,12 @@ const SeatSelect = ({ formData, handleFormChange }) => {
 
     history.push("/confirmed");
   };
+
+  useEffect(() => {
+    Object.values(formData).includes("")
+      ? setDisabled(true)
+      : setDisabled(false);
+  }, [formData, setDisabled]);
 
   return (
     <>
@@ -56,7 +63,11 @@ const SeatSelect = ({ formData, handleFormChange }) => {
             onChange={(e) => handleFormChange(e.target.value, "email")}
           />
 
-          <StyledButton type="submit" onClick={handleFormSubmit}>
+          <StyledButton
+            type="submit"
+            onClick={handleFormSubmit}
+            disabled={disabled}
+          >
             Confirm
           </StyledButton>
         </StyledForm>
@@ -74,16 +85,25 @@ const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  height: 250px;
+  padding: 5px 25px;
+  border: 2px var(--color-alabama-crimson) solid;
+  margin-top: 150px;
 `;
 
 const StyledButton = styled.button`
-  background-color: darkorange;
+  background-color: var(--color-alabama-crimson);
   color: white;
   font-family: var(--font-heading);
   border: none;
 
   &:hover {
     cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 `;
 
