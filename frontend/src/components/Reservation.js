@@ -43,7 +43,7 @@ const StyledBooking = styled.div`
   border: 2px var(--color-alabama-crimson) solid;
   width: 50%;
   height: 50%;
-  margin: 50px 0 50px 0;
+  margin: 50px 0 25px 0;
   padding: 20px;
 
   div:not(:first-child):not(:last-child) {

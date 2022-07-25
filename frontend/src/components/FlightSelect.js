@@ -13,22 +13,30 @@ const FlightSelect = ({ handleFormChange }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchFlights = async () => {
       try {
         const fetchFlightsResponse = await fetch("/api/get-flights");
         const data = await fetchFlightsResponse.json();
 
-        if (data.status === 200) {
-          setFlightsPending("received");
-          setFlights(data.data);
-        } else if (data.status !== 200) {
-          setFlightsPending("error");
+        if (isMounted) {
+          if (data.status === 200) {
+            setFlightsPending("received");
+            setFlights(data.data);
+          } else if (data.status !== 200) {
+            setFlightsPending("error");
+          }
         }
       } catch (err) {
         console.log(err);
       }
     };
     fetchFlights();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -40,9 +48,11 @@ const FlightSelect = ({ handleFormChange }) => {
           {flightsPending === "received" ? (
             <>
               {flights && flights.length > 0
-                ? flights.map((elem, index) => {
+                ? flights.map((flight, index) => {
                     return (
-                      <option key={`flight-${index + 1}`}>{elem.flight}</option>
+                      <option key={`flight-${index + 1}`}>
+                        {flight.flight}
+                      </option>
                     );
                   })
                 : null}

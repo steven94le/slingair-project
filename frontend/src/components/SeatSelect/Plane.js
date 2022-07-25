@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-
 import { CurrentFlightContext } from "../CurrentFlightContext";
 
 const Plane = ({ handleFormChange }) => {
@@ -14,18 +13,26 @@ const Plane = ({ handleFormChange }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchFlight = async () => {
       try {
         const fetchFlightResponse = await fetch(
           `/api/get-flight/${currentFlight}`
         );
         const data = await fetchFlightResponse.json();
-        setSeating(data?.data?.seats);
+        if (isMounted) {
+          setSeating(data?.data?.seats);
+        }
       } catch (err) {
         console.log(err);
       }
     };
     fetchFlight();
+
+    return () => {
+      isMounted = false;
+    };
   }, [currentFlight]);
 
   return (
@@ -42,7 +49,11 @@ const Plane = ({ handleFormChange }) => {
                     value={`${seat.id}`}
                     onChange={(e) => handleSelectSeat(e)}
                   />
-                  <Available>{seat.id}</Available>
+                  <Available
+                    className={selectSeat === seat.id ? "checked" : null}
+                  >
+                    {seat.id}
+                  </Available>
                 </>
               ) : (
                 <Unavailable>{seat.id}</Unavailable>

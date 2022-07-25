@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { NavLink, Link } from "react-router-dom";
-
 import slingairLogo from "../assets/logo_text.png";
 
 const Header = ({ reservationId }) => {

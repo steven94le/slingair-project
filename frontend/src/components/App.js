@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -6,8 +7,6 @@ import SeatSelect from "./SeatSelect";
 import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
 import FlightSelect from "./FlightSelect";
-import React, { useState, useEffect, useContext } from "react";
-
 import Reservation from "./Reservation";
 import { ReservationContext } from "./ReservationContext";
 
@@ -57,7 +56,7 @@ const App = () => {
             />
           </Route>
           <Route exact path="/confirmed">
-            <Confirmation />
+            <Confirmation reservation={reservation} />
           </Route>
           <Route exact path="/reservation">
             <Reservation reservation={reservation} />

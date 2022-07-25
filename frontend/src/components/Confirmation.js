@@ -1,12 +1,7 @@
 import styled from "styled-components";
-
 import tombstone from "../assets/tombstone.png";
-import React, { useContext } from "react";
-import { ReservationContext } from "./ReservationContext";
 
-const Confirmation = () => {
-  const { reservation } = useContext(ReservationContext);
-
+const Confirmation = ({ reservation }) => {
   return (
     <Wrapper>
       <StyledBooking>
@@ -29,7 +24,7 @@ const Confirmation = () => {
           <StyledField>Email:</StyledField> {reservation.email}
         </div>
       </StyledBooking>
-      <img src={tombstone} height="50%" width="20%" alt="tombstone" />
+      <img src={tombstone} height="40%" width="20%" alt="tombstone" />
     </Wrapper>
   );
 };
@@ -46,7 +41,7 @@ const StyledBooking = styled.div`
   border: 2px var(--color-alabama-crimson) solid;
   width: 50%;
   height: 50%;
-  margin: 50px 0 50px 0;
+  margin: 50px 0 25px 0;
   padding: 20px;
 
   div:not(:first-child):not(:last-child) {

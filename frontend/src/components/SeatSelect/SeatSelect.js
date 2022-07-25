@@ -2,7 +2,6 @@ import Plane from "./Plane";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
-
 import { ReservationContext } from "../ReservationContext";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
