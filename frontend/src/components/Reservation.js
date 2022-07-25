@@ -1,46 +1,33 @@
 import styled from "styled-components";
 import tombstone from "../assets/tombstone.png";
-import React, { useEffect, useContext } from "react";
 
-import { ReservationContext } from "./ReservationContext";
-
-const Reservation = ({ reservationId }) => {
-  const { reservation, setReservation } = useContext(ReservationContext);
-
-  useEffect(() => {
-    fetch(`/api/get-reservation/${reservationId}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setReservation(data.data);
-      });
-  }, [reservationId, setReservation]);
-
+const Reservation = ({ reservation }) => {
   return (
-    <Wrapper>
-      <StyledBooking>
-        <StyledHeader>Your reservation:</StyledHeader>
-        <hr />
-        <div>
-          <StyledField>Reservation #:</StyledField> {reservation.id}
-        </div>
-        <div>
-          <StyledField>Flight #:</StyledField> {reservation.flight}
-        </div>
-        <div>
-          <StyledField>Seat #:</StyledField> {reservation.seat}
-        </div>
-        <div>
-          <StyledField>Name:</StyledField> {reservation.givenName}{" "}
-          {reservation.surname}
-        </div>
-        <div>
-          <StyledField>Email:</StyledField> {reservation.email}
-        </div>
-      </StyledBooking>
-      <img src={tombstone} height="50%" width="20%" alt="tombstone" />
-    </Wrapper>
+    <>
+      <Wrapper>
+        <StyledBooking>
+          <StyledHeader>Your reservation:</StyledHeader>
+          <hr />
+          <div>
+            <StyledField>Reservation #:</StyledField> {reservation.id}
+          </div>
+          <div>
+            <StyledField>Flight #:</StyledField> {reservation.flight}
+          </div>
+          <div>
+            <StyledField>Seat #:</StyledField> {reservation.seat}
+          </div>
+          <div>
+            <StyledField>Name:</StyledField> {reservation.givenName}{" "}
+            {reservation.surname}
+          </div>
+          <div>
+            <StyledField>Email:</StyledField> {reservation.email}
+          </div>
+        </StyledBooking>
+        <img src={tombstone} height="50%" width="20%" alt="tombstone" />
+      </Wrapper>
+    </>
   );
 };
 

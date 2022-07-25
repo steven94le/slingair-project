@@ -14,13 +14,18 @@ const Plane = ({ handleFormChange }) => {
   };
 
   useEffect(() => {
-    fetch(`/api/get-flight/${currentFlight}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
+    const fetchFlight = async () => {
+      try {
+        const fetchFlightResponse = await fetch(
+          `/api/get-flight/${currentFlight}`
+        );
+        const data = await fetchFlightResponse.json();
         setSeating(data?.data?.seats);
-      });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchFlight();
   }, [currentFlight]);
 
   return (

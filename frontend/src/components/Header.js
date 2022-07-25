@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 import slingairLogo from "../assets/logo_text.png";
 
 const Header = ({ reservationId }) => {
   return (
     <Wrapper>
-      <a href="/">
+      <Link to="/">
         <Logo>
           <h1>Sling Airlines</h1>
         </Logo>
-      </a>
+      </Link>
       <Nav>
         {reservationId ? (
           <>
@@ -38,6 +38,10 @@ const Logo = styled.div`
   text-indent: -1000px;
   height: 60px;
   width: 550px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 const Nav = styled.nav`
   display: flex;

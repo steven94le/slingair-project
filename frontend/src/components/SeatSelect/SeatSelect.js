@@ -1,35 +1,44 @@
 import Plane from "./Plane";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 
 import { ReservationContext } from "../ReservationContext";
 
 const SeatSelect = ({ formData, handleFormChange }) => {
-  const history = useHistory();
   const { setReservation } = useContext(ReservationContext);
   const [disabled, setDisabled] = useState(true);
+  const [formStatusPending, setFormStatusPending] = useState("");
 
-  const handleFormSubmit = (ev) => {
+  const handleFormSubmit = async (ev) => {
     ev.preventDefault();
 
-    fetch("/api/add-reservation", {
+    const settings = {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
+    };
+
+    try {
+      const addReservationResponse = await fetch(
+        "/api/add-reservation",
+        settings
+      );
+      const data = await addReservationResponse.json();
+
+      if (data.status === 200) {
+        setFormStatusPending("confirmed");
         setReservation(data?.data);
         window.localStorage.setItem("reservationId", data?.data.id);
-      });
-
-    history.push("/confirmed");
+      } else if (data.status !== 200) {
+        setFormStatusPending("error");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -40,38 +49,44 @@ const SeatSelect = ({ formData, handleFormChange }) => {
 
   return (
     <>
-      <h2>Select your seat and Provide your information!</h2>
-      <Wrapper>
-        <Plane handleFormChange={handleFormChange} />
-        <StyledForm>
-          <input
-            type="text"
-            name="givenName"
-            placeholder="First Name"
-            onChange={(e) => handleFormChange(e.target.value, "givenName")}
-          />
-          <input
-            type="text"
-            name="surname"
-            placeholder="Last Name"
-            onChange={(e) => handleFormChange(e.target.value, "surname")}
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            onChange={(e) => handleFormChange(e.target.value, "email")}
-          />
+      {formStatusPending !== "confirmed" ? (
+        <>
+          <h2>Select your seat and Provide your information!</h2>
+          <Wrapper>
+            <Plane handleFormChange={handleFormChange} />
+            <StyledForm>
+              <input
+                type="text"
+                name="givenName"
+                placeholder="First Name"
+                onChange={(e) => handleFormChange(e.target.value, "givenName")}
+              />
+              <input
+                type="text"
+                name="surname"
+                placeholder="Last Name"
+                onChange={(e) => handleFormChange(e.target.value, "surname")}
+              />
+              <input
+                type="text"
+                name="email"
+                placeholder="Email"
+                onChange={(e) => handleFormChange(e.target.value, "email")}
+              />
 
-          <StyledButton
-            type="submit"
-            onClick={handleFormSubmit}
-            disabled={disabled}
-          >
-            Confirm
-          </StyledButton>
-        </StyledForm>
-      </Wrapper>
+              <StyledButton
+                type="submit"
+                onClick={handleFormSubmit}
+                disabled={disabled}
+              >
+                Confirm
+              </StyledButton>
+            </StyledForm>
+          </Wrapper>
+        </>
+      ) : (
+        <Redirect to="/confirmed" />
+      )}
     </>
   );
 };
