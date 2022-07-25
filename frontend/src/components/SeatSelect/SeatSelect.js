@@ -8,6 +8,7 @@ const SeatSelect = ({ formData, handleFormChange }) => {
   const { setReservation } = useContext(ReservationContext);
   const [disabled, setDisabled] = useState(true);
   const [formStatusPending, setFormStatusPending] = useState("");
+  const [formError, setFormError] = useState("");
 
   const handleFormSubmit = async (ev) => {
     ev.preventDefault();
@@ -34,6 +35,7 @@ const SeatSelect = ({ formData, handleFormChange }) => {
         window.localStorage.setItem("reservationId", data?.data.id);
       } else if (data.status !== 200) {
         setFormStatusPending("error");
+        setFormError(data.message);
       }
     } catch (err) {
       console.log(err);
@@ -80,6 +82,9 @@ const SeatSelect = ({ formData, handleFormChange }) => {
               >
                 Confirm
               </StyledButton>
+              {formStatusPending === "error" && (
+                <ErrorMsg>{formError}</ErrorMsg>
+              )}
             </StyledForm>
           </Wrapper>
         </>
@@ -119,6 +124,13 @@ const StyledButton = styled.button`
     cursor: not-allowed;
     opacity: 0.6;
   }
+`;
+
+const ErrorMsg = styled.div`
+  color: red;
+  padding-top: 10px;
+  text-align: center;
+  font-family: var(--font-body);
 `;
 
 export default SeatSelect;

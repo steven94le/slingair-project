@@ -26,7 +26,7 @@ const getFlights = async (req, res) => {
     const flightsCollection = await db.collection("flights").find().toArray();
 
     if (flightsCollection) {
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         message: "Flights found!",
         data: flightsCollection,
@@ -36,7 +36,7 @@ const getFlights = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Flights not found!" });
+    res.status(404).json({ status: 404, error: "Flights not found!" });
   }
   client.close();
 };
@@ -52,7 +52,7 @@ const getFlight = async (req, res) => {
     const flightDocument = await db.collection("flights").findOne({ flight });
 
     if (flightDocument) {
-      res
+      return res
         .status(200)
         .json({ status: 200, message: "Flight found!", data: flightDocument });
     } else {
@@ -60,7 +60,7 @@ const getFlight = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Flight not Found!" });
+    res.status(404).json({ status: 404, error: "Flight not Found!" });
   }
   client.close();
 };
@@ -78,7 +78,7 @@ const getReservations = async (req, res) => {
       .toArray();
 
     if (reservationsCollection) {
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         message: "Reservations found!",
         data: reservationsCollection,
@@ -88,7 +88,7 @@ const getReservations = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Reservations not found!" });
+    res.status(404).json({ status: 404, error: "Reservations not found!" });
   }
   client.close();
 };
@@ -106,7 +106,7 @@ const getSingleReservation = async (req, res) => {
       .findOne({ id });
 
     if (reservationDocument) {
-      res.status(200).json({
+      return res.status(200).json({
         status: 200,
         message: "Reservation found!",
         data: reservationDocument,
@@ -116,7 +116,7 @@ const getSingleReservation = async (req, res) => {
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Reservation not found!" });
+    res.status(404).json({ status: 404, error: "Reservation not found!" });
   }
   client.close();
 };
@@ -137,14 +137,21 @@ const addReservation = async (req, res) => {
     });
 
     if (!flight || !seat || !givenName || !surname || !email) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         message: "Please provide all booking information.",
       });
     }
 
+    if (!email.includes("@")) {
+      return res.status(400).json({
+        status: 400,
+        message: "Please provide valid email.",
+      });
+    }
+
     if (index === -1) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         message: "This seat does not exist!",
       });
@@ -153,7 +160,7 @@ const addReservation = async (req, res) => {
     const isSeatAvailable = seatsInFlight[index].isAvailable;
 
     if (isSeatAvailable === false) {
-      res
+      return res
         .status(400)
         .json({ status: 400, message: "This seat has aleady been reserved!" });
     }
@@ -170,12 +177,12 @@ const addReservation = async (req, res) => {
       .collection("flights")
       .replaceOne({ flight }, flightDocument);
 
-    res
+    return res
       .status(200)
       .json({ status: 200, message: "Seat booked!", data: reservation });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not found!" });
+    res.status(404).json({ status: 404, error: "Not found!" });
   }
   client.close();
 };
@@ -198,23 +205,29 @@ const updateReservation = async (req, res) => {
     const oldSeat = reservationDocument.seat;
 
     if (!reservationDocument) {
-      res.status(400).json({ status: 400, data: "Reservation not found!" });
+      return res
+        .status(400)
+        .json({ status: 400, data: "Reservation not found!" });
     }
 
     if (!flight || !seat || !givenName || !surname || !email) {
-      res
+      return res
         .status(400)
         .json({ status: 400, data: "Updated field(s) cannot be empty!" });
     }
 
     if (!email.includes("@")) {
-      res.status(400).json({ status: 400, data: `Email is missing "@"!` });
+      return res
+        .status(400)
+        .json({ status: 400, data: `Email is missing "@"!` });
     }
 
     const flightDocument = await db.collection("flights").findOne({ flight });
 
     if (!flightDocument) {
-      res.status(400).json({ status: 400, data: "Flight does not exist!" });
+      return res
+        .status(400)
+        .json({ status: 400, data: "Flight does not exist!" });
     }
     const seatsInFlight = flightDocument.seats;
 
@@ -227,11 +240,15 @@ const updateReservation = async (req, res) => {
     });
 
     if (indexSeat === -1) {
-      res.status(400).json({ status: 400, data: "Seat does not exist!" });
+      return res
+        .status(400)
+        .json({ status: 400, data: "Seat does not exist!" });
     }
 
     if (!flightDocument.seats[indexSeat].isAvailable) {
-      res.status(400).json({ status: 400, data: "Seat is already reserved!" });
+      return res
+        .status(400)
+        .json({ status: 400, data: "Seat is already reserved!" });
     }
 
     flightDocument.seats[indexOldSeat].isAvailable = true;
@@ -245,10 +262,12 @@ const updateReservation = async (req, res) => {
       .collection("reservations")
       .updateOne(query, newValues);
 
-    res.status(204).json({ status: 204, message: "Reservation updated!" });
+    return res
+      .status(204)
+      .json({ status: 204, message: "Reservation updated!" });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not found!" });
+    res.status(404).json({ status: 404, error: "Not found!" });
   }
   client.close();
 };
@@ -266,7 +285,9 @@ const deleteReservation = async (req, res) => {
       .findOne({ id });
 
     if (!reservationDocument) {
-      res.status(400).json({ status: 400, data: "Reservation not found!" });
+      return res
+        .status(400)
+        .json({ status: 400, data: "Reservation not found!" });
     }
 
     const { flight, seat } = reservationDocument;
@@ -286,13 +307,13 @@ const deleteReservation = async (req, res) => {
       .collection("reservations")
       .deleteOne({ id });
 
-    res.status(204).json({
+    return res.status(204).json({
       status: 204,
       message: "Reservation deleted!",
     });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, data: "Not found!" });
+    res.status(404).json({ status: 404, error: "Not found!" });
   }
 };
 
