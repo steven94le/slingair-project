@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -8,11 +8,14 @@ import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
 import FlightSelect from "./FlightSelect";
 import Reservation from "./Reservation";
-import { ReservationContext } from "./ReservationContext";
+
+const reservationIdFromLocalStorage =
+  window.localStorage.getItem("reservationId") || "";
 
 const App = () => {
-  const reservationId = window.localStorage.getItem("reservationId");
-  const { reservation, setReservation } = useContext(ReservationContext);
+  const [reservationId, setReservationId] = useState(
+    reservationIdFromLocalStorage
+  );
 
   const [formData, setFormData] = useState({
     flight: "",
@@ -27,24 +30,15 @@ const App = () => {
   };
 
   useEffect(() => {
-    const fetchReservation = async () => {
-      try {
-        const fetchReservationResponse = await fetch(
-          `/api/get-reservation/${reservationId}`
-        );
-        const data = await fetchReservationResponse.json();
-        setReservation(data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchReservation();
-  }, [reservationId, setReservation]);
+    window.localStorage.setItem("reservationId", reservationId);
+  }, [reservationId]);
+
+  console.log("formData", formData);
 
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Header reservationId={reservationId} />
+      <Header reservationId={reservationId} setFormData={setFormData} />
       <Main>
         <Switch>
           <Route exact path="/">
@@ -52,14 +46,14 @@ const App = () => {
             <SeatSelect
               formData={formData}
               handleFormChange={handleFormChange}
-              reservationId={reservationId}
+              setReservationId={setReservationId}
             />
           </Route>
           <Route exact path="/confirmed">
-            <Confirmation reservation={reservation} />
+            <Confirmation reservationId={reservationId} formData={formData} />
           </Route>
           <Route exact path="/reservation">
-            <Reservation reservation={reservation} />
+            <Reservation reservationId={reservationId} />
           </Route>
           <Route path="/error">404: Oops!</Route>
         </Switch>

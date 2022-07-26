@@ -32,7 +32,7 @@ const getFlights = async (req, res) => {
         data: flightsCollection,
       });
     } else {
-      throw Error("Not found!");
+      throw Error("Flights not found!");
     }
   } catch (err) {
     console.log(err.stack);
@@ -56,11 +56,11 @@ const getFlight = async (req, res) => {
         .status(200)
         .json({ status: 200, message: "Flight found!", data: flightDocument });
     } else {
-      throw Error("Not found!");
+      throw Error("Flight not found!");
     }
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, error: "Flight not Found!" });
+    res.status(404).json({ status: 404, error: "Flight not found!" });
   }
   client.close();
 };
@@ -84,7 +84,7 @@ const getReservations = async (req, res) => {
         data: reservationsCollection,
       });
     } else {
-      throw Error("Not found!");
+      throw Error("Reservations not found!");
     }
   } catch (err) {
     console.log(err.stack);
@@ -112,7 +112,7 @@ const getSingleReservation = async (req, res) => {
         data: reservationDocument,
       });
     } else {
-      throw Error("Not found!");
+      throw Error("Reservation not found!");
     }
   } catch (err) {
     console.log(err.stack);
@@ -182,7 +182,7 @@ const addReservation = async (req, res) => {
       .json({ status: 200, message: "Seat booked!", data: reservation });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, error: "Not found!" });
+    res.status(404).json({ status: 404, error: "Seat not found!" });
   }
   client.close();
 };
@@ -267,7 +267,7 @@ const updateReservation = async (req, res) => {
       .json({ status: 204, message: "Reservation updated!" });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, error: "Not found!" });
+    res.status(404).json({ status: 404, error: "Reservation not found!" });
   }
   client.close();
 };
@@ -313,7 +313,7 @@ const deleteReservation = async (req, res) => {
     });
   } catch (err) {
     console.log(err.stack);
-    res.status(404).json({ status: 404, error: "Not found!" });
+    res.status(404).json({ status: 404, error: "Reservation not found!" });
   }
 };
 

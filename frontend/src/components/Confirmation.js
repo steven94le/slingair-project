@@ -1,27 +1,27 @@
 import styled from "styled-components";
 import tombstone from "../assets/tombstone.png";
 
-const Confirmation = ({ reservation }) => {
+const Confirmation = ({ reservationId, formData }) => {
   return (
     <Wrapper>
       <StyledBooking>
         <StyledHeader>Your flight is confirmed!</StyledHeader>
         <hr />
         <div>
-          <StyledField>Reservation #:</StyledField> {reservation.id}
+          <StyledField>Reservation #:</StyledField> {reservationId}
         </div>
         <div>
-          <StyledField>Flight #:</StyledField> {reservation.flight}
+          <StyledField>Flight #:</StyledField> {formData.flight}
         </div>
         <div>
-          <StyledField>Seat #:</StyledField> {reservation.seat}
+          <StyledField>Seat #:</StyledField> {formData.seat}
         </div>
         <div>
-          <StyledField>Name:</StyledField> {reservation.givenName}{" "}
-          {reservation.surname}
+          <StyledField>Name:</StyledField> {formData.givenName}{" "}
+          {formData.surname}
         </div>
         <div>
-          <StyledField>Email:</StyledField> {reservation.email}
+          <StyledField>Email:</StyledField> {formData.email}
         </div>
       </StyledBooking>
       <img src={tombstone} height="40%" width="20%" alt="tombstone" />

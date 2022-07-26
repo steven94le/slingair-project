@@ -1,32 +1,70 @@
 import styled from "styled-components";
 import tombstone from "../assets/tombstone.png";
+import React, { useState, useEffect } from "react";
+import Loading from "./Loading";
 
-const Reservation = ({ reservation }) => {
+const Reservation = ({ reservationId }) => {
+  const [reservation, setReservation] = useState("");
+  const [reservationPending, setReservaitonPending] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchReservation = async () => {
+      try {
+        const fetchReservationResponse = await fetch(
+          `/api/get-reservation/${reservationId}`
+        );
+        const data = await fetchReservationResponse.json();
+
+        if (isMounted) {
+          if (data.status === 200) {
+            setReservaitonPending("loaded");
+            setReservation(data?.data);
+          } else if (data.status !== 200) {
+            setReservaitonPending("loading");
+          }
+        }
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    };
+    fetchReservation();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [reservationId, setReservation]);
+
   return (
     <>
-      <Wrapper>
-        <StyledBooking>
-          <StyledHeader>Your reservation:</StyledHeader>
-          <hr />
-          <div>
-            <StyledField>Reservation #:</StyledField> {reservation.id}
-          </div>
-          <div>
-            <StyledField>Flight #:</StyledField> {reservation.flight}
-          </div>
-          <div>
-            <StyledField>Seat #:</StyledField> {reservation.seat}
-          </div>
-          <div>
-            <StyledField>Name:</StyledField> {reservation.givenName}{" "}
-            {reservation.surname}
-          </div>
-          <div>
-            <StyledField>Email:</StyledField> {reservation.email}
-          </div>
-        </StyledBooking>
-        <img src={tombstone} height="50%" width="20%" alt="tombstone" />
-      </Wrapper>
+      {reservationPending === "loaded" ? (
+        <Wrapper>
+          <StyledBooking>
+            <StyledHeader>Your reservation:</StyledHeader>
+            <hr />
+            <div>
+              <StyledField>Reservation #:</StyledField> {reservationId}
+            </div>
+            <div>
+              <StyledField>Flight #:</StyledField> {reservation.flight}
+            </div>
+            <div>
+              <StyledField>Seat #:</StyledField> {reservation.seat}
+            </div>
+            <div>
+              <StyledField>Name:</StyledField> {reservation.givenName}{" "}
+              {reservation.surname}
+            </div>
+            <div>
+              <StyledField>Email:</StyledField> {reservation.email}
+            </div>
+          </StyledBooking>
+          <img src={tombstone} height="50%" width="20%" alt="tombstone" />
+        </Wrapper>
+      ) : (
+        <Loading />
+      )}
     </>
   );
 };

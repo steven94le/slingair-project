@@ -1,15 +1,24 @@
 import styled from "styled-components";
-import { NavLink, Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink, useHistory } from "react-router-dom";
 import slingairLogo from "../assets/logo_text.png";
+import { CurrentFlightContext } from "./CurrentFlightContext";
 
-const Header = ({ reservationId }) => {
+const Header = ({ reservationId, setFormData }) => {
+  const { setCurrentFlight } = useContext(CurrentFlightContext);
+  const history = useHistory();
+
+  const handlerGoHome = () => {
+    history.push("/");
+    setFormData("");
+    setCurrentFlight("");
+  };
+
   return (
     <Wrapper>
-      <Link to="/">
-        <Logo>
-          <h1>Sling Airlines</h1>
-        </Logo>
-      </Link>
+      <Logo onClick={handlerGoHome}>
+        <h1>Sling Airlines</h1>
+      </Logo>
       <Nav>
         {reservationId ? (
           <>

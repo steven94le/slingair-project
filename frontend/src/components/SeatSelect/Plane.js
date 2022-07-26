@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { CurrentFlightContext } from "../CurrentFlightContext";
 
 const Plane = ({ handleFormChange }) => {
-  const [seating, setSeating] = useState("");
   const { currentFlight } = useContext(CurrentFlightContext);
   const [selectSeat, setSelectSeat] = useState("");
+  const [seating, setSeating] = useState("");
 
   const handleSelectSeat = (e) => {
     setSelectSeat(e.target.value);
@@ -21,11 +21,12 @@ const Plane = ({ handleFormChange }) => {
           `/api/get-flight/${currentFlight}`
         );
         const data = await fetchFlightResponse.json();
+
         if (isMounted) {
           setSeating(data?.data?.seats);
         }
       } catch (err) {
-        console.log(err);
+        console.log("Error: ", err);
       }
     };
     fetchFlight();

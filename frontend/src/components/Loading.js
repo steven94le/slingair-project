@@ -1,11 +1,11 @@
 import styled from "styled-components";
+import slingairLogo from "../assets/air-sling.png";
 
-import logoImg from "../assets/air-sling.png";
-
-const Footer = () => (
+const Loading = () => (
   <Wrapper>
-    <Logo src={logoImg} />
-    <Text>The only way to fly!</Text>
+    <Logo src={slingairLogo} />
+    <Text>Loading...</Text>
+    <Logo src={slingairLogo} />
   </Wrapper>
 );
 
@@ -15,9 +15,9 @@ const Wrapper = styled.div`
   height: 60px;
 `;
 const Logo = styled.img`
-  padding-top: 15px;
-  height: 80%;
+  height: 100%;
 `;
+
 const Text = styled.p`
   color: var(--color-alabama-crimson);
   font-family: var(--font-heading);
@@ -26,4 +26,4 @@ const Text = styled.p`
   margin: 12px 0 0 24px;
 `;
 
-export default Footer;
+export default Loading;

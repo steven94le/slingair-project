@@ -1,11 +1,9 @@
 import Plane from "./Plane";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
-import React, { useContext, useEffect, useState } from "react";
-import { ReservationContext } from "../ReservationContext";
+import React, { useEffect, useState } from "react";
 
-const SeatSelect = ({ formData, handleFormChange }) => {
-  const { setReservation } = useContext(ReservationContext);
+const SeatSelect = ({ formData, handleFormChange, setReservationId }) => {
   const [disabled, setDisabled] = useState(true);
   const [formStatusPending, setFormStatusPending] = useState("");
   const [formError, setFormError] = useState("");
@@ -31,14 +29,13 @@ const SeatSelect = ({ formData, handleFormChange }) => {
 
       if (data.status === 200) {
         setFormStatusPending("confirmed");
-        setReservation(data?.data);
-        window.localStorage.setItem("reservationId", data?.data.id);
+        setReservationId(data?.data?.id);
       } else if (data.status !== 200) {
         setFormStatusPending("error");
         setFormError(data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.log("Error: ", err);
     }
   };
 
@@ -52,7 +49,9 @@ const SeatSelect = ({ formData, handleFormChange }) => {
     <>
       {formStatusPending !== "confirmed" ? (
         <>
-          <h2>Select your seat and Provide your information!</h2>
+          <StyledHeader>
+            Select your seat and Provide your information!
+          </StyledHeader>
           <Wrapper>
             <Plane handleFormChange={handleFormChange} />
             <StyledForm>
@@ -95,6 +94,10 @@ const SeatSelect = ({ formData, handleFormChange }) => {
   );
 };
 
+const StyledHeader = styled.h2`
+  margin: 10px 0 -10px 0;
+`;
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -127,7 +130,7 @@ const StyledButton = styled.button`
 `;
 
 const ErrorMsg = styled.div`
-  color: red;
+  color: var(--color-cadmium-red);
   padding-top: 10px;
   text-align: center;
   font-family: var(--font-body);
