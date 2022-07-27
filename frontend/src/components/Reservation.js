@@ -4,9 +4,16 @@ import React, { useState, useEffect, useContext } from "react";
 import Loading from "./Loading";
 import { Redirect } from "react-router-dom";
 import { CurrentFlightContext } from "./CurrentFlightContext";
+import { SeatingContext } from "./SeatingContext";
 
-const Reservation = ({ reservationId, setReservationId, setFormData }) => {
+const Reservation = ({
+  reservationId,
+  setReservationId,
+  setFormData,
+  initialForm,
+}) => {
   const { setCurrentFlight } = useContext(CurrentFlightContext);
+  const { setSeating } = useContext(SeatingContext);
   const [reservation, setReservation] = useState("");
   const [reservationStatus, setReservationStatus] = useState("");
 
@@ -22,8 +29,9 @@ const Reservation = ({ reservationId, setReservationId, setFormData }) => {
       );
 
       if (deleteRes.ok) {
-        setFormData("");
+        setFormData(initialForm);
         setCurrentFlight("");
+        setSeating("");
         setReservation("");
         setReservationId("");
         setReservationStatus("deleted");
@@ -45,7 +53,6 @@ const Reservation = ({ reservationId, setReservationId, setFormData }) => {
           `/api/get-reservation/${reservationId}`
         );
         const data = await fetchReservationResponse.json();
-
         if (isMounted) {
           if (data.status === 200) {
             setReservationStatus("loaded");

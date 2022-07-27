@@ -17,13 +17,15 @@ const App = () => {
     reservationIdFromLocalStorage
   );
 
-  const [formData, setFormData] = useState({
+  const initialForm = {
     flight: "",
     seat: "",
     givenName: "",
     surname: "",
     email: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialForm);
 
   const handleFormChange = (value, name) => {
     setFormData({ ...formData, [name]: value });
@@ -36,7 +38,11 @@ const App = () => {
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Header reservationId={reservationId} setFormData={setFormData} />
+      <Header
+        reservationId={reservationId}
+        setFormData={setFormData}
+        initialForm={initialForm}
+      />
       <Main>
         <Switch>
           <Route exact path="/">
@@ -55,6 +61,7 @@ const App = () => {
               reservationId={reservationId}
               setReservationId={setReservationId}
               setFormData={setFormData}
+              initialForm={initialForm}
             />
           </Route>
           <Route path="/error">404: Oops!</Route>

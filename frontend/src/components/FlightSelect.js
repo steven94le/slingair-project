@@ -1,49 +1,64 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import styled from "styled-components";
 import { CurrentFlightContext } from "./CurrentFlightContext";
+import { SeatingContext } from "./SeatingContext";
 
 const FlightSelect = ({ handleFormChange }) => {
-  const { setCurrentFlight } = useContext(CurrentFlightContext);
+  const { currentFlight, setCurrentFlight } = useContext(CurrentFlightContext);
+  const { setSeating } = useContext(SeatingContext);
   const [flights, setFlights] = useState([]);
   const [flightsPending, setFlightsPending] = useState("");
+  const isMounted = useRef(false);
 
-  const handleSelectFlight = (e) => {
-    setCurrentFlight(e.target.value);
-    handleFormChange(e.target.value, "flight");
+  const handleSelectFlight = (ev) => {
+    setCurrentFlight(ev.target.value);
+    handleFormChange(ev.target.value, "flight");
   };
 
   useEffect(() => {
-    let isMounted = true;
-
     const fetchFlights = async () => {
       try {
         const fetchFlightsResponse = await fetch("/api/get-flights");
         const data = await fetchFlightsResponse.json();
 
-        if (isMounted) {
-          if (data.status === 200) {
-            setFlightsPending("received");
-            setFlights(data?.data);
-          } else if (data.status !== 200) {
-            setFlightsPending("error");
-          }
+        if (data.status === 200) {
+          setFlightsPending("received");
+          setFlights(data?.data);
+        } else if (data.status !== 200) {
+          setFlightsPending("error");
         }
       } catch (err) {
         console.log("Error: ", err);
       }
     };
     fetchFlights();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      const fetchFlight = async () => {
+        try {
+          const fetchFlightResponse = await fetch(
+            `/api/get-flight/${currentFlight}`
+          );
+          const data = await fetchFlightResponse.json();
+
+          setSeating(data?.data?.seats);
+        } catch (err) {
+          console.log("Error: ", err);
+        }
+      };
+      fetchFlight();
+    } else {
+      isMounted.current = true;
+    }
+  }, [currentFlight, setSeating]);
 
   return (
     <Wrapper>
       <h2>Flight Number :</h2>
       <StyledForm>
-        <select onChange={(e) => handleSelectFlight(e)}>
+        <select onChange={handleSelectFlight}>
           <option value="">Choose your flight</option>
           {flightsPending === "received" ? (
             <>

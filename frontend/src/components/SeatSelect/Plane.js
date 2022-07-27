@@ -1,40 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { CurrentFlightContext } from "../CurrentFlightContext";
+import { SeatingContext } from "../SeatingContext";
 
 const Plane = ({ handleFormChange }) => {
-  const { currentFlight } = useContext(CurrentFlightContext);
+  const { seating } = useContext(SeatingContext);
   const [selectSeat, setSelectSeat] = useState("");
-  const [seating, setSeating] = useState("");
 
-  const handleSelectSeat = (e) => {
-    setSelectSeat(e.target.value);
-    handleFormChange(e.target.value, "seat");
+  const handleSelectSeat = (ev) => {
+    setSelectSeat(ev.target.value);
+    handleFormChange(ev.target.value, "seat");
   };
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchFlight = async () => {
-      try {
-        const fetchFlightResponse = await fetch(
-          `/api/get-flight/${currentFlight}`
-        );
-        const data = await fetchFlightResponse.json();
-
-        if (isMounted) {
-          setSeating(data?.data?.seats);
-        }
-      } catch (err) {
-        console.log("Error: ", err);
-      }
-    };
-    fetchFlight();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [currentFlight]);
 
   return (
     <Wrapper>
