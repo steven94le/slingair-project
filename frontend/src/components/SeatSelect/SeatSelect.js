@@ -32,7 +32,7 @@ const SeatSelect = ({ formData, handleFormChange, setReservationId }) => {
         setReservationId(data?.data?.id);
       } else if (data.status !== 200) {
         setFormStatusPending("error");
-        setFormError(data.message);
+        setFormError(data.error);
       }
     } catch (err) {
       console.log("Error: ", err);

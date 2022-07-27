@@ -139,21 +139,21 @@ const addReservation = async (req, res) => {
     if (!flight || !seat || !givenName || !surname || !email) {
       return res.status(400).json({
         status: 400,
-        message: "Please provide all booking information.",
+        error: "Please provide all booking information.",
       });
     }
 
     if (!email.includes("@")) {
       return res.status(400).json({
         status: 400,
-        message: "Please provide valid email.",
+        error: "Please provide valid email.",
       });
     }
 
     if (index === -1) {
       return res.status(400).json({
         status: 400,
-        message: "This seat does not exist!",
+        error: "This seat does not exist!",
       });
     }
 
@@ -162,7 +162,7 @@ const addReservation = async (req, res) => {
     if (isSeatAvailable === false) {
       return res
         .status(400)
-        .json({ status: 400, message: "This seat has aleady been reserved!" });
+        .json({ status: 400, error: "This seat has aleady been reserved!" });
     }
 
     const reservation = { id: uuidv4(), ...req.body };
@@ -207,19 +207,19 @@ const updateReservation = async (req, res) => {
     if (!reservationDocument) {
       return res
         .status(400)
-        .json({ status: 400, data: "Reservation not found!" });
+        .json({ status: 400, error: "Reservation not found!" });
     }
 
     if (!flight || !seat || !givenName || !surname || !email) {
       return res
         .status(400)
-        .json({ status: 400, data: "Updated field(s) cannot be empty!" });
+        .json({ status: 400, error: "Updated field(s) cannot be empty!" });
     }
 
     if (!email.includes("@")) {
       return res
         .status(400)
-        .json({ status: 400, data: `Email is missing "@"!` });
+        .json({ status: 400, error: `Email is missing "@"!` });
     }
 
     const flightDocument = await db.collection("flights").findOne({ flight });
@@ -227,7 +227,7 @@ const updateReservation = async (req, res) => {
     if (!flightDocument) {
       return res
         .status(400)
-        .json({ status: 400, data: "Flight does not exist!" });
+        .json({ status: 400, error: "Flight does not exist!" });
     }
     const seatsInFlight = flightDocument.seats;
 
@@ -242,13 +242,13 @@ const updateReservation = async (req, res) => {
     if (indexSeat === -1) {
       return res
         .status(400)
-        .json({ status: 400, data: "Seat does not exist!" });
+        .json({ status: 400, error: "Seat does not exist!" });
     }
 
     if (!flightDocument.seats[indexSeat].isAvailable) {
       return res
         .status(400)
-        .json({ status: 400, data: "Seat is already reserved!" });
+        .json({ status: 400, error: "Seat is already reserved!" });
     }
 
     flightDocument.seats[indexOldSeat].isAvailable = true;
@@ -287,7 +287,7 @@ const deleteReservation = async (req, res) => {
     if (!reservationDocument) {
       return res
         .status(400)
-        .json({ status: 400, data: "Reservation not found!" });
+        .json({ status: 400, error: "Reservation not found!" });
     }
 
     const { flight, seat } = reservationDocument;

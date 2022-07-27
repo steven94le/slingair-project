@@ -1,11 +1,40 @@
 import styled from "styled-components";
 import tombstone from "../assets/tombstone.png";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Loading from "./Loading";
+import { Redirect } from "react-router-dom";
+import { CurrentFlightContext } from "./CurrentFlightContext";
 
-const Reservation = ({ reservationId }) => {
+const Reservation = ({ reservationId, setReservationId, setFormData }) => {
+  const { setCurrentFlight } = useContext(CurrentFlightContext);
   const [reservation, setReservation] = useState("");
-  const [reservationPending, setReservaitonPending] = useState("");
+  const [reservationStatus, setReservationStatus] = useState("");
+
+  const handleDeleteReservation = async (ev) => {
+    ev.preventDefault();
+
+    try {
+      const deleteRes = await fetch(
+        `/api/delete-reservation/${reservationId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (deleteRes.ok) {
+        setFormData("");
+        setCurrentFlight("");
+        setReservation("");
+        setReservationId("");
+        setReservationStatus("deleted");
+        console.log("Delete request successful");
+      } else {
+        console.log("Delete request unsuccessful");
+      }
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -19,10 +48,10 @@ const Reservation = ({ reservationId }) => {
 
         if (isMounted) {
           if (data.status === 200) {
-            setReservaitonPending("loaded");
+            setReservationStatus("loaded");
             setReservation(data?.data);
           } else if (data.status !== 200) {
-            setReservaitonPending("loading");
+            setReservationStatus("loading");
           }
         }
       } catch (err) {
@@ -38,7 +67,7 @@ const Reservation = ({ reservationId }) => {
 
   return (
     <>
-      {reservationPending === "loaded" ? (
+      {reservationStatus === "loaded" ? (
         <Wrapper>
           <StyledBooking>
             <StyledHeader>Your reservation:</StyledHeader>
@@ -59,12 +88,18 @@ const Reservation = ({ reservationId }) => {
             <div>
               <StyledField>Email:</StyledField> {reservation.email}
             </div>
+            <div>
+              <CancelButton onClick={handleDeleteReservation}>
+                Cancel Reservation
+              </CancelButton>
+            </div>
           </StyledBooking>
-          <img src={tombstone} height="50%" width="20%" alt="tombstone" />
+          <img src={tombstone} height="30%" width="20%" alt="tombstone" />
         </Wrapper>
       ) : (
         <Loading />
       )}
+      {reservationStatus === "deleted" && <Redirect to="/" />}
     </>
   );
 };
@@ -79,23 +114,49 @@ const Wrapper = styled.div`
 const StyledBooking = styled.div`
   font-family: var(--font-body);
   border: 2px var(--color-alabama-crimson) solid;
-  width: 50%;
+  width: 40%;
   height: 50%;
-  margin: 50px 0 25px 0;
+  margin-bottom: 25px;
   padding: 20px;
 
-  div:not(:first-child):not(:last-child) {
-    margin-bottom: 25px;
+  div:not(:first-child) {
+    margin-bottom: 20px;
   }
 `;
 
 const StyledHeader = styled.div`
   color: var(--color-alabama-crimson);
   font-size: 20px;
+  font-weight: bolder;
 `;
 
 const StyledField = styled.span`
   font-weight: bolder;
+  color: var(--color-alabama-crimson);
+`;
+
+const CancelButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-alabama-crimson);
+  color: var(--color-selective-yellow);
+  border-color: var(--color-selective-yellow);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  height: 26px;
+  text-decoration: none;
+  transition: all ease 400ms;
+  width: 100%;
+
+  &:hover {
+    background: var(--color-selective-yellow);
+    color: var(--color-alabama-crimson);
+    border-color: var(--color-alabama-crimson);
+    cursor: pointer;
+  }
 `;
 
 export default Reservation;

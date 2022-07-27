@@ -33,8 +33,6 @@ const App = () => {
     window.localStorage.setItem("reservationId", reservationId);
   }, [reservationId]);
 
-  console.log("formData", formData);
-
   return (
     <BrowserRouter>
       <GlobalStyles />
@@ -53,7 +51,11 @@ const App = () => {
             <Confirmation reservationId={reservationId} formData={formData} />
           </Route>
           <Route exact path="/reservation">
-            <Reservation reservationId={reservationId} />
+            <Reservation
+              reservationId={reservationId}
+              setReservationId={setReservationId}
+              setFormData={setFormData}
+            />
           </Route>
           <Route path="/error">404: Oops!</Route>
         </Switch>

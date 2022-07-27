@@ -24,7 +24,7 @@ const Confirmation = ({ reservationId, formData }) => {
           <StyledField>Email:</StyledField> {formData.email}
         </div>
       </StyledBooking>
-      <img src={tombstone} height="40%" width="20%" alt="tombstone" />
+      <img src={tombstone} height="30%" width="20%" alt="tombstone" />
     </Wrapper>
   );
 };
@@ -39,23 +39,25 @@ const Wrapper = styled.div`
 const StyledBooking = styled.div`
   font-family: var(--font-body);
   border: 2px var(--color-alabama-crimson) solid;
-  width: 50%;
+  width: 40%;
   height: 50%;
-  margin: 50px 0 25px 0;
+  margin-bottom: 25px;
   padding: 20px;
 
-  div:not(:first-child):not(:last-child) {
-    margin-bottom: 25px;
+  div:not(:first-child) {
+    margin-bottom: 20px;
   }
 `;
 
 const StyledHeader = styled.div`
   color: var(--color-alabama-crimson);
   font-size: 20px;
+  font-weight: bolder;
 `;
 
 const StyledField = styled.span`
   font-weight: bolder;
+  color: var(--color-alabama-crimson);
 `;
 
 export default Confirmation;
