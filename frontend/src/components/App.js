@@ -8,6 +8,7 @@ import Confirmation from "./Confirmation";
 import GlobalStyles from "./GlobalStyles";
 import FlightSelect from "./FlightSelect";
 import Reservation from "./Reservation";
+import Admin from "./Admin";
 
 const reservationIdFromLocalStorage =
   window.localStorage.getItem("reservationId") || "";
@@ -63,6 +64,9 @@ const App = () => {
               setFormData={setFormData}
               initialForm={initialForm}
             />
+          </Route>
+          <Route exact path="/admin">
+            <Admin />
           </Route>
           <Route path="/error">404: Oops!</Route>
         </Switch>
