@@ -21,21 +21,18 @@ const SeatSelect = ({ formData, handleFormChange, setReservationId }) => {
     };
 
     try {
-      const addReservationResponse = await fetch(
-        "/api/add-reservation",
-        settings
-      );
-      const data = await addReservationResponse.json();
+      const res = await fetch("/api/add-reservation", settings);
+      const data = await res.json();
 
-      if (data.status === 200) {
-        setFormStatusPending("confirmed");
-        setReservationId(data?.data?.id);
-      } else if (data.status !== 200) {
+      if (!res.ok) {
         setFormStatusPending("error");
         setFormError(data.error);
+        throw Error(`${res.status} ${res.statusText}`);
       }
+      setFormStatusPending("confirmed");
+      setReservationId(data?.data?.id);
     } catch (err) {
-      console.log("Error: ", err);
+      console.log(err);
     }
   };
 

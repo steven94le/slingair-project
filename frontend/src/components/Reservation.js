@@ -21,54 +21,46 @@ const Reservation = ({
     ev.preventDefault();
 
     try {
-      const deleteRes = await fetch(
-        `/api/delete-reservation/${reservationId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`/api/delete-reservation/${reservationId}`, {
+        method: "DELETE",
+      });
 
-      if (deleteRes.ok) {
-        setFormData(initialForm);
-        setCurrentFlight("");
-        setSeating("");
-        setReservation("");
-        setReservationId("");
-        setReservationStatus("deleted");
-        console.log("Delete request successful");
-      } else {
-        console.log("Delete request unsuccessful");
+      if (!res.ok) {
+        throw Error(`${res.status} ${res.statusText}`);
       }
+      setFormData(initialForm);
+      setCurrentFlight("");
+      setSeating("");
+      setReservation("");
+      setReservationId("");
+      setReservationStatus("deleted");
     } catch (err) {
-      console.log("Error: ", err);
+      console.log(err);
     }
   };
 
   useEffect(() => {
-    let isMounted = true;
-
+    let isMounted = false;
     const fetchReservation = async () => {
       try {
-        const fetchReservationResponse = await fetch(
-          `/api/get-reservation/${reservationId}`
-        );
-        const data = await fetchReservationResponse.json();
-        if (isMounted) {
-          if (data.status === 200) {
-            setReservationStatus("loaded");
-            setReservation(data?.data);
-          } else if (data.status !== 200) {
+        const res = await fetch(`/api/get-reservation/${reservationId}`);
+        const data = await res.json();
+        if (!isMounted) {
+          if (!res.ok) {
             setReservationStatus("loading");
+            throw Error(`${res.status} ${res.statusText}`);
           }
+          setReservationStatus("loaded");
+          setReservation(data?.data);
         }
       } catch (err) {
-        console.log("Error: ", err);
+        console.log(err);
       }
     };
     fetchReservation();
 
     return () => {
-      isMounted = false;
+      isMounted = true;
     };
   }, [reservationId, setReservation]);
 
@@ -77,7 +69,10 @@ const Reservation = ({
       {reservationStatus === "loaded" ? (
         <Wrapper>
           <StyledBooking>
-            <StyledHeader>Your reservation:</StyledHeader>
+            <StyledHeader>
+              Your reservation:
+              <CancelButton onClick={handleDeleteReservation}>X</CancelButton>
+            </StyledHeader>
             <hr />
             <div>
               <StyledField>Reservation #:</StyledField> {reservationId}
@@ -95,11 +90,7 @@ const Reservation = ({
             <div>
               <StyledField>Email:</StyledField> {reservation.email}
             </div>
-            <div>
-              <CancelButton onClick={handleDeleteReservation}>
-                Cancel Reservation
-              </CancelButton>
-            </div>
+            <div></div>
           </StyledBooking>
           <img src={tombstone} height="30%" width="20%" alt="tombstone" />
         </Wrapper>
@@ -123,8 +114,8 @@ const StyledBooking = styled.div`
   border: 2px var(--color-alabama-crimson) solid;
   width: 40%;
   height: 50%;
-  margin-bottom: 25px;
-  padding: 20px;
+  margin-bottom: 20px;
+  padding: 25px;
 
   div:not(:first-child) {
     margin-bottom: 20px;
@@ -135,6 +126,9 @@ const StyledHeader = styled.div`
   color: var(--color-alabama-crimson);
   font-size: 20px;
   font-weight: bolder;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const StyledField = styled.span`
@@ -143,9 +137,6 @@ const StyledField = styled.span`
 `;
 
 const CancelButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background: var(--color-alabama-crimson);
   color: var(--color-selective-yellow);
   border-color: var(--color-selective-yellow);
@@ -156,7 +147,6 @@ const CancelButton = styled.button`
   height: 26px;
   text-decoration: none;
   transition: all ease 400ms;
-  width: 100%;
 
   &:hover {
     background: var(--color-selective-yellow);

@@ -18,17 +18,17 @@ const FlightSelect = ({ handleFormChange }) => {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const fetchFlightsResponse = await fetch("/api/get-flights");
-        const data = await fetchFlightsResponse.json();
+        const res = await fetch("/api/get-flights");
+        const data = await res.json();
 
-        if (data.status === 200) {
-          setFlightsPending("received");
-          setFlights(data?.data);
-        } else if (data.status !== 200) {
+        if (!res.ok) {
           setFlightsPending("error");
+          throw Error(`${res.status} ${res.statusText}`);
         }
+        setFlightsPending("received");
+        setFlights(data?.data);
       } catch (err) {
-        console.log("Error: ", err);
+        console.log(err);
       }
     };
     fetchFlights();
@@ -38,14 +38,15 @@ const FlightSelect = ({ handleFormChange }) => {
     if (isMounted.current) {
       const fetchFlight = async () => {
         try {
-          const fetchFlightResponse = await fetch(
-            `/api/get-flight/${currentFlight}`
-          );
-          const data = await fetchFlightResponse.json();
+          const res = await fetch(`/api/get-flight/${currentFlight}`);
+          const data = await res.json();
 
+          if (!res.ok) {
+            throw Error(`${res.status} ${res.statusText}`);
+          }
           setSeating(data?.data?.seats);
         } catch (err) {
-          console.log("Error: ", err);
+          console.log(err);
         }
       };
       fetchFlight();
