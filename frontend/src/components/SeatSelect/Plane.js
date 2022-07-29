@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { SeatingContext } from "../SeatingContext";
+import { FormContext } from "../FormContext";
 
-const Plane = ({ handleFormChange }) => {
+const Plane = () => {
   const { seating } = useContext(SeatingContext);
+  const { handleFormChange } = useContext(FormContext);
   const [selectSeat, setSelectSeat] = useState("");
 
   const handleSelectSeat = (ev) => {

@@ -4,10 +4,12 @@ import { NavLink, useHistory } from "react-router-dom";
 import slingairLogo from "../assets/logo_text.png";
 import { CurrentFlightContext } from "./CurrentFlightContext";
 import { SeatingContext } from "./SeatingContext";
+import { FormContext } from "./FormContext";
 
-const Header = ({ reservationId, setFormData, setDisabled, initialForm }) => {
+const Header = ({ reservationId }) => {
   const { setCurrentFlight } = useContext(CurrentFlightContext);
   const { setSeating } = useContext(SeatingContext);
+  const { setFormData, initialForm } = useContext(FormContext);
   const history = useHistory();
 
   const handlerGoHome = () => {

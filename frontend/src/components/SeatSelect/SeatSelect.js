@@ -1,9 +1,13 @@
 import Plane from "./Plane";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { FormContext } from "../FormContext";
 
-const SeatSelect = ({ formData, handleFormChange, setReservationId }) => {
+const API_ADD_RESERVATION = "/api/add-reservation";
+
+const SeatSelect = ({ setReservationId }) => {
+  const { formData, handleFormChange } = useContext(FormContext);
   const [disabled, setDisabled] = useState(true);
   const [formStatusPending, setFormStatusPending] = useState("");
   const [formError, setFormError] = useState("");
@@ -21,7 +25,7 @@ const SeatSelect = ({ formData, handleFormChange, setReservationId }) => {
     };
 
     try {
-      const res = await fetch("/api/add-reservation", settings);
+      const res = await fetch(API_ADD_RESERVATION, settings);
       const data = await res.json();
 
       if (!res.ok) {
@@ -50,7 +54,7 @@ const SeatSelect = ({ formData, handleFormChange, setReservationId }) => {
             Select your seat and Provide your information!
           </StyledHeader>
           <Wrapper>
-            <Plane handleFormChange={handleFormChange} />
+            <Plane />
             <StyledForm>
               <input
                 type="text"

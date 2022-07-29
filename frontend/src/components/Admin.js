@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Loading from "./Loading";
 
+const API_GET_RESERVATIONS = "/api/get-reservations";
+
 const Admin = () => {
   const [reservations, setReseravtions] = useState("");
 
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const res = await fetch("/api/get-reservations");
+        const res = await fetch(API_GET_RESERVATIONS);
         const data = await res.json();
 
         if (!res.ok) {
@@ -26,7 +28,7 @@ const Admin = () => {
     <Wrapper>
       {reservations && reservations.length > 0 ? (
         reservations.map((reservation, index) => (
-          <StyledBooking key={index + 1}>
+          <StyledBooking key={`reservation-${index + 1}`}>
             <div>
               <StyledField>Reservation #:</StyledField> {reservation.id}
             </div>

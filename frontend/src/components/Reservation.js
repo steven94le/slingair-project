@@ -5,13 +5,13 @@ import Loading from "./Loading";
 import { Redirect } from "react-router-dom";
 import { CurrentFlightContext } from "./CurrentFlightContext";
 import { SeatingContext } from "./SeatingContext";
+import { FormContext } from "./FormContext";
 
-const Reservation = ({
-  reservationId,
-  setReservationId,
-  setFormData,
-  initialForm,
-}) => {
+const API_DELETE_RESERVATION = "/api/delete-reservation/";
+const API_GET_RESERVATION = "/api/get-reservation/";
+
+const Reservation = ({ reservationId, setReservationId }) => {
+  const { setFormData, initialForm } = useContext(FormContext);
   const { setCurrentFlight } = useContext(CurrentFlightContext);
   const { setSeating } = useContext(SeatingContext);
   const [reservation, setReservation] = useState("");
@@ -21,7 +21,7 @@ const Reservation = ({
     ev.preventDefault();
 
     try {
-      const res = await fetch(`/api/delete-reservation/${reservationId}`, {
+      const res = await fetch(API_DELETE_RESERVATION + reservationId, {
         method: "DELETE",
       });
 
@@ -43,7 +43,7 @@ const Reservation = ({
     let isMounted = false;
     const fetchReservation = async () => {
       try {
-        const res = await fetch(`/api/get-reservation/${reservationId}`);
+        const res = await fetch(API_GET_RESERVATION + reservationId);
         const data = await res.json();
         if (!isMounted) {
           if (!res.ok) {

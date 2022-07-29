@@ -2,8 +2,13 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import styled from "styled-components";
 import { CurrentFlightContext } from "./CurrentFlightContext";
 import { SeatingContext } from "./SeatingContext";
+import { FormContext } from "./FormContext";
 
-const FlightSelect = ({ handleFormChange }) => {
+const API_GET_FLIGHTS = "/api/get-flights";
+const API_GET_FLIGHT = "/api/get-flight/";
+
+const FlightSelect = () => {
+  const { handleFormChange } = useContext(FormContext);
   const { currentFlight, setCurrentFlight } = useContext(CurrentFlightContext);
   const { setSeating } = useContext(SeatingContext);
   const [flights, setFlights] = useState([]);
@@ -18,7 +23,7 @@ const FlightSelect = ({ handleFormChange }) => {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const res = await fetch("/api/get-flights");
+        const res = await fetch(API_GET_FLIGHTS);
         const data = await res.json();
 
         if (!res.ok) {
@@ -38,7 +43,7 @@ const FlightSelect = ({ handleFormChange }) => {
     if (isMounted.current) {
       const fetchFlight = async () => {
         try {
-          const res = await fetch(`/api/get-flight/${currentFlight}`);
+          const res = await fetch(API_GET_FLIGHT + currentFlight);
           const data = await res.json();
 
           if (!res.ok) {

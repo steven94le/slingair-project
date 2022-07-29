@@ -4,12 +4,15 @@ import App from "./components/App";
 
 import { CurrentFlightProvider } from "./components/CurrentFlightContext";
 import { SeatingProvider } from "./components/SeatingContext";
+import { FormProvider } from "./components/FormContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <CurrentFlightProvider>
       <SeatingProvider>
-        <App />
+        <FormProvider>
+          <App />
+        </FormProvider>
       </SeatingProvider>
     </CurrentFlightProvider>
   </React.StrictMode>,

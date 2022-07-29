@@ -1,7 +1,10 @@
+import React, { useContext } from "react";
 import styled from "styled-components";
 import tombstone from "../assets/tombstone.png";
+import { FormContext } from "./FormContext";
 
-const Confirmation = ({ reservationId, formData }) => {
+const Confirmation = ({ reservationId }) => {
+  const { formData } = useContext(FormContext);
   return (
     <Wrapper>
       <StyledBooking>

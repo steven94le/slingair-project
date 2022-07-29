@@ -18,20 +18,6 @@ const App = () => {
     reservationIdFromLocalStorage
   );
 
-  const initialForm = {
-    flight: "",
-    seat: "",
-    givenName: "",
-    surname: "",
-    email: "",
-  };
-
-  const [formData, setFormData] = useState(initialForm);
-
-  const handleFormChange = (value, name) => {
-    setFormData({ ...formData, [name]: value });
-  };
-
   useEffect(() => {
     window.localStorage.setItem("reservationId", reservationId);
   }, [reservationId]);
@@ -39,30 +25,20 @@ const App = () => {
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Header
-        reservationId={reservationId}
-        setFormData={setFormData}
-        initialForm={initialForm}
-      />
+      <Header reservationId={reservationId} />
       <Main>
         <Switch>
           <Route exact path="/">
-            <FlightSelect handleFormChange={handleFormChange} />
-            <SeatSelect
-              formData={formData}
-              handleFormChange={handleFormChange}
-              setReservationId={setReservationId}
-            />
+            <FlightSelect />
+            <SeatSelect setReservationId={setReservationId} />
           </Route>
           <Route exact path="/confirmed">
-            <Confirmation reservationId={reservationId} formData={formData} />
+            <Confirmation reservationId={reservationId} />
           </Route>
           <Route exact path="/reservation">
             <Reservation
               reservationId={reservationId}
               setReservationId={setReservationId}
-              setFormData={setFormData}
-              initialForm={initialForm}
             />
           </Route>
           <Route exact path="/admin">
