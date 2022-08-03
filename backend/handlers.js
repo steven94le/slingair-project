@@ -23,13 +23,13 @@ const getFlights = async (req, res) => {
   try {
     await client.connect();
     const db = client.db("project-slingair");
-    const flightsCollection = await db.collection("flights").find().toArray();
+    const flightsDocument = await db.collection("flights").distinct("flight");
 
-    if (flightsCollection) {
+    if (flightsDocument) {
       return res.status(200).json({
         status: 200,
         message: "Flights found!",
-        data: flightsCollection,
+        data: flightsDocument,
       });
     } else {
       throw Error("Flights not found!");
