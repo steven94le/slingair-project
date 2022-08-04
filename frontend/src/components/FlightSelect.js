@@ -71,8 +71,8 @@ const FlightSelect = () => {
               {flights && flights.length > 0
                 ? flights.map((flight, index) => {
                     return (
-                      <option key={`flight-${index + 1}`} value={flight.flight}>
-                        {flight.flight}
+                      <option key={`flight-${index + 1}`} value={flight}>
+                        {flight}
                       </option>
                     );
                   })
